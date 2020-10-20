@@ -12,6 +12,7 @@ namespace StrategyGame.Model.Entities
         public int DefenderId { get; set; }
         public virtual Round Round { get; set; }
         public int RoundId { get; set; }
+        public bool IsConcluded { get; set; }
 
         public virtual ICollection<CombatUnitConnector> Units { get; set; }
     }
