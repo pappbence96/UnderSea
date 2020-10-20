@@ -13,5 +13,7 @@ namespace StrategyGame.Model.Entities
         public virtual Round ResearchStartedRound { get; set; }
         public int ResearchStartedRoundId { get; set; }
         public int RoundsLeftUntilCompletion { get; set; }
+
+        public bool IsComplete { get => RoundsLeftUntilCompletion == 0; }
     }
 }
