@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StrategyGame.Dal
+namespace StrategyGame.Model.Entities
 {
-    public class ApplicationUser : IdentityUser<int>, IApplicationUser
+    public class ApplicationUser : IdentityUser<int>
     {
         public Country Country { get; set; }
         public int CountryId { get; set; }

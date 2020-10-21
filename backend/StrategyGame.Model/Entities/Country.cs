@@ -6,6 +6,7 @@ namespace StrategyGame.Model.Entities
 {
     public class Country : EntityBase
     {
+        public ApplicationUser User { get; set; }
         public int UserId { get; set; }
         public int Population { get; set; }
         public int Pearl { get; set; }

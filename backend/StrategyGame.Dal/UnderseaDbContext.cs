@@ -71,6 +71,10 @@ namespace StrategyGame.Dal
                 .WithOne(c => c.Defender)
                 .HasForeignKey(c => c.DefenderId)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Country>()
+                .HasOne(c => c.User)
+                .WithOne(u => u.Country)
+                .HasForeignKey<Country>(c => c.UserId);
 
             builder.Entity<Round>()
                 .HasMany(r => r.StartedBuilds)
