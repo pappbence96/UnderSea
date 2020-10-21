@@ -46,5 +46,16 @@ namespace StrategyGame.Bll.Extensions
         }
 
 
+        /// <summary>
+        /// Determines whether no element of a sequence satisfies a condition.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of source.</typeparam>
+        /// <param name="source">An System.Collections.Generic.IEnumerable`1 whose elements to apply the predicate to.</param>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>true if no elements in the source sequence pass the test in the specified predicate; otherwise, false.</returns>
+        public static bool None<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            return source.Any(element => !predicate(element));
+        }
     }
 }
