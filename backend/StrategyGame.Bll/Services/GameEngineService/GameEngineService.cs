@@ -12,6 +12,12 @@ namespace StrategyGame.Bll.Services.GameEngineService
 {
     public class GameEngineService
     {
+        private const int PopulationDefaultTax = 25;
+
+        private const int BuildingScoreValue = 50;
+        private const int PopulationScoreValue = 1;
+        private const int ResearchScoreValue = 100;
+
         private readonly UnderseaDbContext context;
 
         public GameEngineService(UnderseaDbContext context)
@@ -19,12 +25,12 @@ namespace StrategyGame.Bll.Services.GameEngineService
             this.context = context;
         }
 
-        public async Task PerformPreCombatTasks()
+        private void PerformPreCombatTasks()
         {
             foreach (var country in context.Countries)
             {
                 // Tax calculation : (base population tax + building production) * research modifiers
-                int baseTax = country.Population * 25;
+                int baseTax = country.Population * PopulationDefaultTax;
                 int pearlProduction = country.Buildings
                     .Where(c => c.IsComplete)
                     .Sum(b => b.Building.PearlPerRound);
@@ -69,39 +75,16 @@ namespace StrategyGame.Bll.Services.GameEngineService
             }
 
         }
-        public async Task PerformCombats()
+        private async Task PerformCombats()
         {
-
-        }
-        public async Task CalculateScoreboard()
-        {
-
-        }
-
-        public async Task PerformTick()
-        {
-            /* Egy körben megvalósítandó feladatok (ilyen sorrendben!):
-            •	adó jóváírása
-            •	korall jóváírása
-            •	zsold kifizetése
-            •	katonák etetése (a lakosokat nem kell, ők a sajátjukon felül termelik a megadott mennyiséget)
-            •	fejlesztés: minden fejlesztés 15 kört vesz igénybe, egyszerre csak egy dolog fejleszthető és minden csak egyszer fejleszthető ki
-            •	építkezés: minden épület 5 kör alatt épül fel, de egyszerre csak egy épülhet, ezekből természetesen lehet sok
-            •	harc
-            •	ranglétra helyezés számítása */
-
-
-            Round currentRound = await context.Rounds.SingleAsync(r => r.IsActive);
-
-            PerformPreCombatTasks();
-
             // Combat
-            foreach(var combat in currentRound.ActiveCombats)
+            var currentRound = await context.Rounds.FirstAsync(r => r.IsActive);
+            foreach (var combat in currentRound.ActiveCombats)
             {
                 // Attacking army strength
                 int attackerBaseStrength = combat.Units.Sum(u => u.Count * u.Unit.Attack);
                 double attackerAttackMultiplier = combat.Attacker.Researches.Where(r => r.IsComplete).Product(r => r.Research.AttackMultiplier);
-                double morale = (100 + new Random().Next(-5, 6)) / 100d; // morale between 95% and 105% 
+                double morale = (new Random().Next(95, 106)) / 100d; // morale between 95% and 105% 
                 double attackPower = attackerBaseStrength * attackerAttackMultiplier * morale;
 
                 // Defending army strength
@@ -110,32 +93,34 @@ namespace StrategyGame.Bll.Services.GameEngineService
                 double defensePower = defenderBaseStrength * defenderDefenseMultiplier;
 
                 // If the attacking army won
-                if(attackPower > defensePower)
+                if (attackPower > defensePower)
                 {
                     // Half of defending army dead, remove half of the pearl and coral amount
-                    foreach(var unit in combat.Defender.Units)
+                    foreach (var unit in combat.Defender.Units)
                     {
                         // Number of defenders is the amount of units minus those away in combat
                         int deadUnits = (unit.TotalCount - unit.InCombat) / 2;
                         unit.TotalCount -= deadUnits;
                     }
-                    if(combat.Defender.Coral > 0)
+                    // Only allow stealing if the amount is positive
+                    if (combat.Defender.Coral > 0)
                     {
                         int stolenCoral = combat.Defender.Coral / 2;
                         combat.Defender.Coral -= stolenCoral;
                         combat.Attacker.Coral += stolenCoral;
                     }
-                    if(combat.Defender.Pearl > 0)
+                    if (combat.Defender.Pearl > 0)
                     {
                         int stolenPearl = combat.Defender.Pearl / 2;
                         combat.Defender.Pearl -= stolenPearl;
                         combat.Attacker.Pearl += stolenPearl;
                     }
                 }
+                // If the defending army won
                 else
                 {
                     // Half of attacking army dead
-                    foreach(var attackerUnit in combat.Units)
+                    foreach (var attackerUnit in combat.Units)
                     {
                         int dead = attackerUnit.Count / 2;
                         var totalUnitsOfType = combat.Attacker.Units.Single(u => u.Unit == attackerUnit.Unit);
@@ -147,31 +132,35 @@ namespace StrategyGame.Bll.Services.GameEngineService
             }
 
             // Reset the "units in combat" to 0 only after all the combats of the round were finished
-            foreach(var country in context.Countries)
+            foreach (var country in context.Countries)
             {
-                foreach(var unit in country.Units)
+                foreach (var unit in country.Units)
                 {
                     unit.InCombat = 0;
                 }
             }
-
-            var newScoreboardEntries = new List<ScoreboardEntry>();
+        }
+        private async Task CalculateScoreboard()
+        {
             // Scoreboard calculation
-            foreach(var country in context.Countries)
+            var currentRound = await context.Rounds.FirstAsync(r => r.IsActive);
+            var newScoreboardEntries = new List<ScoreboardEntry>();
+            foreach (var country in context.Countries)
             {
                 var newEntry = new ScoreboardEntry
                 {
                     Country = country,
                     Round = currentRound,
-                    PopulationScore = country.Population * 1,
-                    BuildingScore = country.Buildings.Count(b => b.IsComplete) * 50,
+                    PopulationScore = country.Population * PopulationScoreValue,
+                    BuildingScore = country.Buildings.Count(b => b.IsComplete) * BuildingScoreValue,
                     ArmyScore = country.Units.Sum(u => u.TotalCount * u.Unit.ScoreboardValue),
-                    ResearchScore = country.Researches.Count(r => r.IsComplete) * 100
+                    ResearchScore = country.Researches.Count(r => r.IsComplete) * ResearchScoreValue
                 };
             }
+
             // Order and set computed position
             newScoreboardEntries = newScoreboardEntries.OrderByDescending(e => e.TotalScore).ToList();
-            for(int i = 0; i < newScoreboardEntries.Count; i++)
+            for (int i = 0; i < newScoreboardEntries.Count; i++)
             {
                 newScoreboardEntries[i].Position = i;
             }
@@ -181,7 +170,13 @@ namespace StrategyGame.Bll.Services.GameEngineService
             currentRound.TickedAt = DateTime.UtcNow;
             var newRound = new Round() { IsActive = true };
             context.Rounds.Add(newRound);
+        }
 
+        public async Task PerformTick()
+        {
+            PerformPreCombatTasks();
+            await PerformCombats();
+            await CalculateScoreboard();
             await context.SaveChangesAsync();
         }
     }
