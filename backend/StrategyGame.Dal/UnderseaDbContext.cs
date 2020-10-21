@@ -17,6 +17,7 @@ namespace StrategyGame.Dal
         public DbSet<Research> Researches { get; set; }
         public DbSet<Round> Rounds { get; set; }
         public DbSet<Unit> Units { get; set; }
+        public DbSet<ScoreboardEntry> ScoreboardEntries { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -96,7 +97,6 @@ namespace StrategyGame.Dal
                 .HasMany(r => r.ScoreboardEntries)
                 .WithOne(e => e.Round)
                 .HasForeignKey(e => e.RoundId);
-
 
             builder.Seed();
         }
