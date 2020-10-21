@@ -3,6 +3,7 @@ using StrategyGame.Dal;
 using StrategyGame.Model.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,7 +27,9 @@ namespace StrategyGame.Bll.Services.Building
 
         public async Task<CountryBuildingConnector> CheckForBuildInProgress(int countryId)
         {
-            return await context.CountryBuildingConnectors.FirstOrDefaultAsync(c => c.CountryId == countryId && !c.IsComplete);
+            var country = (await context.Countries.Include(c => c.Buildings).FirstOrDefaultAsync(r => r.Id == countryId))
+                ?? throw new KeyNotFoundException($"Country with ID {countryId} not found.");
+            return country.Buildings.FirstOrDefault(c => !c.IsComplete);
         }
 
         public async Task<CountryBuildingConnector> StartBuildForCountry(int buildingId, int countryId)
@@ -34,7 +37,7 @@ namespace StrategyGame.Bll.Services.Building
             // Check if the specified IDs are valid
             var building = (await context.Buildings.FirstOrDefaultAsync(r => r.Id == buildingId))
                 ?? throw new KeyNotFoundException($"Building with ID {buildingId} not found.");
-            var country = (await context.Countries.FirstOrDefaultAsync(r => r.Id == countryId))
+            var country = (await context.Countries.Include(c => c.Buildings).FirstOrDefaultAsync(r => r.Id == countryId))
                 ?? throw new KeyNotFoundException($"Country with ID {countryId} not found.");
 
             // Check if a build is already in progress

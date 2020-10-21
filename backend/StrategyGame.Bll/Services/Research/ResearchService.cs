@@ -33,7 +33,9 @@ namespace StrategyGame.Bll.Services.Research
 
         public async Task<CountryResearchConnector> CheckForResearchInProgress(int countryId)
         {
-            return await context.CountryResearchConnectors.FirstOrDefaultAsync(c => c.CountryId == countryId && !c.IsComplete);
+            var country = (await context.Countries.Include(c => c.Researches).FirstOrDefaultAsync(r => r.Id == countryId))
+                ?? throw new KeyNotFoundException($"Country with ID {countryId} not found.");
+            return country.Researches.FirstOrDefault(r => !r.IsComplete);
         }
 
         public async Task<CountryResearchConnector> StartResearchForCountry(int researchId, int countryId)
@@ -41,11 +43,11 @@ namespace StrategyGame.Bll.Services.Research
             // Check if the specified IDs are valid
             var research = (await context.Researches.FirstOrDefaultAsync(r => r.Id == researchId))
                 ?? throw new KeyNotFoundException($"Research with ID {researchId} not found.");
-            var country = (await context.Countries.FirstOrDefaultAsync(r => r.Id == countryId))
+            var country = (await context.Countries.Include(c => c.Researches).FirstOrDefaultAsync(r => r.Id == countryId))
                 ?? throw new KeyNotFoundException($"Country with ID {countryId} not found.");
 
             // Check if the research has been already started
-            var connection = await context.CountryResearchConnectors.FirstOrDefaultAsync(c => c.ResearchId == researchId && c.CountryId == countryId);
+            var connection = country.Researches.FirstOrDefault(r => r.Research == research);
             if (connection != null)
             {
                 throw new InvalidOperationException($"Country {countryId} has already researched {researchId}");
