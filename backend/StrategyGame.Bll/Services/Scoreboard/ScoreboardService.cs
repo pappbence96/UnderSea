@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace StrategyGame.Bll.Services.Scoreboard
 {
-    public class ScoreboardService
+    public class ScoreboardService : IScoreboardService
     {
         private readonly UnderseaDbContext context;
 
