@@ -13,5 +13,6 @@ namespace StrategyGame.Model.Entities
         public virtual ICollection<CountryResearchConnector> StartedResearches { get; set; }
         public virtual ICollection<CountryBuildingConnector> StartedBuilds { get; set; }
         public virtual ICollection<Combat> ActiveCombats { get; set; }
+        public virtual ICollection<ScoreboardEntry> ScoreboardEntries { get; set; }
     }
 }

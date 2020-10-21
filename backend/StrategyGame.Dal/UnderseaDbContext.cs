@@ -75,6 +75,10 @@ namespace StrategyGame.Dal
                 .HasOne(c => c.User)
                 .WithOne(u => u.Country)
                 .HasForeignKey<Country>(c => c.UserId);
+            builder.Entity<Country>()
+                .HasMany(c => c.ScoreboardEntries)
+                .WithOne(e => e.Country)
+                .HasForeignKey(c => c.CountryId);
 
             builder.Entity<Round>()
                 .HasMany(r => r.StartedBuilds)
@@ -88,6 +92,10 @@ namespace StrategyGame.Dal
                 .HasMany(r => r.ActiveCombats)
                 .WithOne(c => c.Round)
                 .HasForeignKey(c => c.RoundId);
+            builder.Entity<Round>()
+                .HasMany(r => r.ScoreboardEntries)
+                .WithOne(e => e.Round)
+                .HasForeignKey(e => e.RoundId);
 
 
             builder.Seed();

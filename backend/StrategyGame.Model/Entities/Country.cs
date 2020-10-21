@@ -18,5 +18,6 @@ namespace StrategyGame.Model.Entities
         public virtual ICollection<CountryUnitConnector> Units { get; set; }
         public virtual ICollection<Combat> OutgoingAttacks { get; set; }
         public virtual ICollection<Combat> IncomingAttacks { get; set; }
+        public virtual ICollection<ScoreboardEntry> ScoreboardEntries { get; set; }
     }
 }

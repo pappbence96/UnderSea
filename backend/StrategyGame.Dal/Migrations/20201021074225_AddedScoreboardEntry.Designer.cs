@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StrategyGame.Dal;
 
 namespace StrategyGame.Dal.Migrations
 {
     [DbContext(typeof(UnderseaDbContext))]
-    partial class UnderseaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201021074225_AddedScoreboardEntry")]
+    partial class AddedScoreboardEntry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -684,9 +686,6 @@ namespace StrategyGame.Dal.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int>("ScoreboardValue")
-                        .HasColumnType("int");
-
                     b.Property<int>("Supply")
                         .HasColumnType("int");
 
@@ -703,7 +702,6 @@ namespace StrategyGame.Dal.Migrations
                             Name = "Rush seal",
                             Pay = 1,
                             Price = 50,
-                            ScoreboardValue = 0,
                             Supply = 1
                         },
                         new
@@ -714,7 +712,6 @@ namespace StrategyGame.Dal.Migrations
                             Name = "War sea horse",
                             Pay = 1,
                             Price = 50,
-                            ScoreboardValue = 0,
                             Supply = 1
                         },
                         new
@@ -725,7 +722,6 @@ namespace StrategyGame.Dal.Migrations
                             Name = "Laser shark",
                             Pay = 3,
                             Price = 100,
-                            ScoreboardValue = 0,
                             Supply = 2
                         });
                 });

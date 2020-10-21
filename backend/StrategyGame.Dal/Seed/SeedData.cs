@@ -54,15 +54,15 @@ namespace StrategyGame.Dal.Seed
             {
                 new Unit
                 {
-                    Id = 1, Name = "Rush seal", Attack = 6, Defense = 2, Price = 50, Pay = 1, Supply = 1
+                    Id = 1, Name = "Rush seal", Attack = 6, Defense = 2, Price = 50, Pay = 1, Supply = 1, ScoreboardValue = 5
                 },
                 new Unit
                 {
-                    Id = 2, Name = "War sea horse", Attack = 2, Defense = 6, Price = 50, Pay = 1, Supply = 1
+                    Id = 2, Name = "War sea horse", Attack = 2, Defense = 6, Price = 50, Pay = 1, Supply = 1, ScoreboardValue = 5
                 },
                 new Unit
                 {
-                    Id = 3, Name = "Laser shark", Attack = 5, Defense = 5, Price = 100, Pay = 3, Supply = 2
+                    Id = 3, Name = "Laser shark", Attack = 5, Defense = 5, Price = 100, Pay = 3, Supply = 2, ScoreboardValue = 10
                 }
             };
             builder.Entity<Unit>().HasData(unitTypes);

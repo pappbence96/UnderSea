@@ -13,6 +13,8 @@ namespace StrategyGame.Model.Entities
         public int Defense { get; set; }
         public int Supply { get; set; }
         public int Pay { get; set; }
+        public int ScoreboardValue { get; set; }
+        
 
         public virtual ICollection<CountryUnitConnector> Countries { get; set; }
 
