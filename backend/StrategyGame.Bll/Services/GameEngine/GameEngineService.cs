@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace StrategyGame.Bll.Services.GameEngineService
 {
-    public class GameEngineService
+    public class GameEngineService : IGameEngineService
     {
         private const int PopulationDefaultTax = 25;
 
@@ -122,7 +122,7 @@ namespace StrategyGame.Bll.Services.GameEngineService
                     // Half of attacking army dead
                     foreach (var attackerUnit in combat.Units)
                     {
-                        int dead = (int) Math.Ceiling(attackerUnit.Count / 10f);
+                        int dead = (int)Math.Ceiling(attackerUnit.Count / 10f);
                         var totalUnitsOfType = combat.Attacker.Units.Single(u => u.Unit == attackerUnit.Unit);
                         // Return the attacking troops home, except for the dead
                         totalUnitsOfType.TotalCount -= dead;

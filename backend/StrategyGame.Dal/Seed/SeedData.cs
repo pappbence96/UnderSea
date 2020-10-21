@@ -21,27 +21,27 @@ namespace StrategyGame.Dal.Seed
             {
                 new Research
                 {
-                    Id = 1, Name = "Mud tractor", CoralMultiplier = 1.1
+                    Id = 1, Name = "Mud tractor", CoralMultiplier = 1.1, Price = 300
                 },
                 new Research
                 {
-                    Id = 2, Name = "Mud harvester", CoralMultiplier = 1.15
+                    Id = 2, Name = "Mud harvester", CoralMultiplier = 1.15, Price = 500
                 },
                 new Research
                 {
-                    Id = 3, Name = "Coral wall", DefenseMultiplier = 1.2
+                    Id = 3, Name = "Coral wall", DefenseMultiplier = 1.2, Price = 500
                 },
                 new Research
                 {
-                    Id = 4, Name = "Sonar cannon", AttackMultiplier = 1.2
+                    Id = 4, Name = "Sonar cannon", AttackMultiplier = 1.2, Price = 500
                 },
                 new Research
                 {
-                    Id = 5, Name = "Underwater martial arts", AttackMultiplier = 1.1, DefenseMultiplier = 1.1
+                    Id = 5, Name = "Underwater martial arts", AttackMultiplier = 1.1, DefenseMultiplier = 1.1, Price = 750
                 },
                 new Research
                 {
-                    Id = 6, Name = "Alchemy", TaxMultiplier = 1.3
+                    Id = 6, Name = "Alchemy", TaxMultiplier = 1.3, Price = 1000
                 }
             };
             builder.Entity<Research>().HasData(researchTypes);
