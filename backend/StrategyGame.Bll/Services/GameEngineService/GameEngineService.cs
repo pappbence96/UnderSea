@@ -19,6 +19,65 @@ namespace StrategyGame.Bll.Services.GameEngineService
             this.context = context;
         }
 
+        public async Task PerformPreCombatTasks()
+        {
+            foreach (var country in context.Countries)
+            {
+                // Tax calculation : (base population tax + building production) * research modifiers
+                int baseTax = country.Population * 25;
+                int pearlProduction = country.Buildings
+                    .Where(c => c.IsComplete)
+                    .Sum(b => b.Building.PearlPerRound);
+                double pearlModifier = country.Researches
+                    .Where(c => c.IsComplete)
+                    .Product(c => c.Research.TaxMultiplier);
+                country.Pearl += (int)((baseTax + pearlProduction) * pearlModifier);
+
+                // Coral calculation: building production * research modifier
+                int coralProduction = country.Buildings
+                    .Where(c => c.IsComplete)
+                    .Sum(b => b.Building.CoralPerRound);
+                double coralModifier = country.Researches
+                    .Where(c => c.IsComplete)
+                    .Product(c => c.Research.CoralMultiplier);
+                country.Coral += (int)(coralProduction * coralModifier);
+
+                // Soldier pay (for now let's assume that countries can go into debt)
+                var totalPay = country.Units.Sum(c => c.TotalCount * c.Unit.Pay);
+                country.Pearl -= totalPay;
+
+                // Soldier supplying (for now let's assume that countries can go into debt)
+                var totalSupply = country.Units.Sum(c => c.TotalCount * c.Unit.Supply);
+                country.Coral -= totalSupply;
+
+                // Research progress
+                foreach (var research in country.Researches.Where(c => !c.IsComplete))
+                {
+                    research.RoundsLeftUntilCompletion--;
+                }
+
+                // Building progress
+                foreach (var building in country.Buildings.Where(c => !c.IsComplete))
+                {
+                    building.RoundsLeftUntilCompletion--;
+                    if (building.IsComplete)
+                    {
+                        building.Country.Population += building.Building.PopulationOnConstructionFinished;
+                        building.Country.Garrison += building.Building.GarrisonOnConstructionFinished;
+                    }
+                }
+            }
+
+        }
+        public async Task PerformCombats()
+        {
+
+        }
+        public async Task CalculateScoreboard()
+        {
+
+        }
+
         public async Task PerformTick()
         {
             /* Egy körben megvalósítandó feladatok (ilyen sorrendben!):
@@ -34,68 +93,7 @@ namespace StrategyGame.Bll.Services.GameEngineService
 
             Round currentRound = await context.Rounds.SingleAsync(r => r.IsActive);
 
-            // Tax collection: pearls increase by (tax + buildingIncome) * researchTaxModifier
-            foreach(var country in context.Countries)
-            {
-                int tax = country.Population * 25;
-
-                int buildingProduction = country.Buildings
-                    .Where(c => c.IsComplete)
-                    .Sum(b => b.Building.PearlPerRound);
-
-                double researchModifier = country.Researches
-                    .Where(c => c.IsComplete)
-                    .Product(c => c.Research.TaxMultiplier);
-
-                double increment = (tax + buildingProduction) * researchModifier;
-                country.Pearl += (int)increment;
-            }
-
-            // Coral colletion: coral increse by buildingProduction * researchCoralModifierforeach(var country in context.Countries)
-            foreach(var country in context.Countries)
-            {
-                int buildingProduction = country.Buildings
-                    .Where(c => c.IsComplete)
-                    .Sum(b => b.Building.CoralPerRound);
-
-                double researchModifier = country.Researches
-                    .Where(c => c.IsComplete)
-                    .Product(c => c.Research.CoralMultiplier);
-
-                double increment = buildingProduction * researchModifier;
-                country.Coral += (int)increment;
-            }
-            
-            // Soldier pay (for now let's assume that countries can go into debt)
-            foreach(var country in context.Countries)
-            {
-                var totalPay = country.Units.Sum(c => c.TotalCount * c.Unit.Pay);
-                country.Pearl -= totalPay;
-            }
-
-            // Soldier supplying (for now let's assume that countries can go into debt)
-            foreach (var country in context.Countries)
-            {
-                var totalSupply = country.Units.Sum(c => c.TotalCount * c.Unit.Supply);
-                country.Coral -= totalSupply;
-            }
-
-            // Research progress
-            foreach(var research in context.CountryResearchConnectors.Where(c => !c.IsComplete))
-            {
-                research.RoundsLeftUntilCompletion--;
-            }
-
-            // Building progress
-            foreach(var building in context.CountryBuildingConnectors.Where(c => !c.IsComplete))
-            {
-                building.RoundsLeftUntilCompletion--;
-                if (building.IsComplete)
-                {
-                    building.Country.Population+= building.Building.PopulationOnConstructionFinished;
-                    building.Country.Garrison += building.Building.GarrisonOnConstructionFinished;
-                }
-            }
+            PerformPreCombatTasks();
 
             // Combat
             foreach(var combat in currentRound.ActiveCombats)
