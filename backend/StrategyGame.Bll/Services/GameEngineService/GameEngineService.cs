@@ -99,7 +99,7 @@ namespace StrategyGame.Bll.Services.GameEngineService
                     foreach (var unit in combat.Defender.Units)
                     {
                         // Number of defenders is the amount of units minus those away in combat
-                        int deadUnits = (unit.TotalCount - unit.InCombat) / 2;
+                        int deadUnits = (int)Math.Ceiling((unit.TotalCount - unit.InCombat) / 10f);
                         unit.TotalCount -= deadUnits;
                     }
                     // Only allow stealing if the amount is positive
@@ -122,7 +122,7 @@ namespace StrategyGame.Bll.Services.GameEngineService
                     // Half of attacking army dead
                     foreach (var attackerUnit in combat.Units)
                     {
-                        int dead = attackerUnit.Count / 2;
+                        int dead = (int) Math.Ceiling(attackerUnit.Count / 10f);
                         var totalUnitsOfType = combat.Attacker.Units.Single(u => u.Unit == attackerUnit.Unit);
                         // Return the attacking troops home, except for the dead
                         totalUnitsOfType.TotalCount -= dead;
