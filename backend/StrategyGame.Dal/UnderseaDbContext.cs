@@ -8,6 +8,10 @@ namespace StrategyGame.Dal
 {
     public class UnderseaDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
+        public UnderseaDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Combat> Combats { get; set; }
         public DbSet<CombatUnitConnector> CombatUnitConnectors { get; set; }
