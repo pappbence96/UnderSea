@@ -9,10 +9,10 @@ namespace StrategyGame.Model.Entities
         public virtual ApplicationUser User { get; set; }
         public string Name { get; set; }
         public int UserId { get; set; }
-        public int Population { get; set; }
+        public int Population { get; set; } = 100;
         public int Pearl { get; set; }
         public int Coral { get; set; }
-        public int Garrison { get; set; }
+        public int Garrison { get; set; } = 20;
 
         public virtual ICollection<CountryBuildingConnector> Buildings { get; set; }
         public virtual ICollection<CountryResearchConnector> Researches { get; set; }

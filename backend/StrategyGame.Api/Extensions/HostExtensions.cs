@@ -48,10 +48,6 @@ namespace StrategyGame.Api.Extensions
                     var country = new Country
                     {
                         Name = $"Test country{user.PhoneNumber}",
-                        Population = 100,
-                        Pearl = 0,
-                        Coral = 0,
-                        Garrison = 20,
                         User = user
                     };
                     dbContext.Countries.Add(country);
