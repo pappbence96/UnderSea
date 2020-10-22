@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StrategyGame.Dal;
 using StrategyGame.Model.Entities;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +26,7 @@ namespace StrategyGame.Bll.Services.Identity
             this.roleManager = roleManager;
         }
 
-        public async Task<object> CreateTokenForUser(LoginModel model)
+        public async Task<string> CreateTokenForUser(LoginModel model)
         {
             if (model == null || !model.Valid)
             {
@@ -61,6 +63,50 @@ namespace StrategyGame.Bll.Services.Identity
             {
                 throw new ArgumentException("Password is incorrect.");
             }
+        }
+
+        public async Task RegisterNewUser(RegisterModel model)
+        {
+            // Validate input
+            if (model == null || !model.Valid)
+            {
+                throw new ArgumentException("Register model is null.");
+            }
+            if(model.Password != model.ConfirmPassword)
+            {
+                throw new ArgumentException("Passwords do not match.");
+            }
+
+            // Check for existing user and country
+            var user = await userManager.FindByNameAsync(model.Username);
+            if(user != null)
+            {
+                throw new InvalidOperationException("User already exists.");
+            }
+            var country = await context.Countries.FirstOrDefaultAsync(c => c.Name.ToUpper() == model.CountryName.ToUpper());
+            if(country != null)
+            {
+                throw new InvalidOperationException("Country already exists.");
+            }
+
+            // Create the entities
+            user = new ApplicationUser
+            {
+                UserName = model.Username
+            };
+            var result = await userManager.CreateAsync(user, model.Password);
+            if(!result.Succeeded)
+            {
+                throw new Exception("User creation failed.");
+            }
+            await userManager.AddToRoleAsync(user, "user");
+            country = new Country
+            {
+                Name = model.CountryName,
+                User = user
+            };
+            context.Countries.Add(country);
+            await context.SaveChangesAsync();
         }
     }
 }

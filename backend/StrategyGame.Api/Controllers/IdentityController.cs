@@ -24,5 +24,12 @@ namespace StrategyGame.Api.Controllers
         {
             return Ok(await identityService.CreateTokenForUser(model));
         }
+
+        [HttpPost("register")]
+        public async Task<ActionResult> Register([FromBody] RegisterModel model)
+        {
+            await identityService.RegisterNewUser(model);
+            return Ok();
+        }
     }
 }

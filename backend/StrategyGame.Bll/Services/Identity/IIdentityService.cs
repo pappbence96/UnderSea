@@ -4,6 +4,7 @@ namespace StrategyGame.Bll.Services.Identity
 {
     public interface IIdentityService
     {
-        Task<object> CreateTokenForUser(LoginModel model);
+        Task<string> CreateTokenForUser(LoginModel model);
+        Task RegisterNewUser(RegisterModel model);
     }
 }
