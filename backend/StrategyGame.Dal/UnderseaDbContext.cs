@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StrategyGame.Dal.Seed;
 using StrategyGame.Model.Entities;
 
 namespace StrategyGame.Dal
 {
-    public class UnderseaDbContext : IdentityDbContext
+    public class UnderseaDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Combat> Combats { get; set; }

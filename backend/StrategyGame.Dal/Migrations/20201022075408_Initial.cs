@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace StrategyGame.Dal.Migrations
 {
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,7 +11,8 @@ namespace StrategyGame.Dal.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true)
@@ -25,7 +26,8 @@ namespace StrategyGame.Dal.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
@@ -39,7 +41,10 @@ namespace StrategyGame.Dal.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    CountryId = table.Column<int>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -63,23 +68,6 @@ namespace StrategyGame.Dal.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Buildings", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Countries",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(nullable: false),
-                    Population = table.Column<int>(nullable: false),
-                    Pearl = table.Column<int>(nullable: false),
-                    Coral = table.Column<int>(nullable: false),
-                    Garrison = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Countries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,7 +96,8 @@ namespace StrategyGame.Dal.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Number = table.Column<int>(nullable: false),
-                    TickedAt = table.Column<DateTime>(nullable: false)
+                    TickedAt = table.Column<DateTime>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -127,7 +116,8 @@ namespace StrategyGame.Dal.Migrations
                     Attack = table.Column<int>(nullable: false),
                     Defense = table.Column<int>(nullable: false),
                     Supply = table.Column<int>(nullable: false),
-                    Pay = table.Column<int>(nullable: false)
+                    Pay = table.Column<int>(nullable: false),
+                    ScoreboardValue = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -140,7 +130,7 @@ namespace StrategyGame.Dal.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(nullable: false),
+                    RoleId = table.Column<int>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
                 },
@@ -161,7 +151,7 @@ namespace StrategyGame.Dal.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
                 },
@@ -183,7 +173,7 @@ namespace StrategyGame.Dal.Migrations
                     LoginProvider = table.Column<string>(nullable: false),
                     ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: false)
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -200,8 +190,8 @@ namespace StrategyGame.Dal.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(nullable: false),
-                    RoleId = table.Column<string>(nullable: false)
+                    UserId = table.Column<int>(nullable: false),
+                    RoleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -224,7 +214,7 @@ namespace StrategyGame.Dal.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     LoginProvider = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Value = table.Column<string>(nullable: true)
@@ -241,6 +231,30 @@ namespace StrategyGame.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Countries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    UserId = table.Column<int>(nullable: false),
+                    Population = table.Column<int>(nullable: false),
+                    Pearl = table.Column<int>(nullable: false),
+                    Coral = table.Column<int>(nullable: false),
+                    Garrison = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Countries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Countries_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Combats",
                 columns: table => new
                 {
@@ -248,7 +262,8 @@ namespace StrategyGame.Dal.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AttackerId = table.Column<int>(nullable: false),
                     DefenderId = table.Column<int>(nullable: false),
-                    RoundId = table.Column<int>(nullable: false)
+                    RoundId = table.Column<int>(nullable: false),
+                    IsConcluded = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -370,6 +385,37 @@ namespace StrategyGame.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ScoreboardEntries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Position = table.Column<int>(nullable: false),
+                    PopulationScore = table.Column<int>(nullable: false),
+                    BuildingScore = table.Column<int>(nullable: false),
+                    ArmyScore = table.Column<int>(nullable: false),
+                    ResearchScore = table.Column<int>(nullable: false),
+                    CountryId = table.Column<int>(nullable: false),
+                    RoundId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScoreboardEntries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ScoreboardEntries_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ScoreboardEntries_Rounds_RoundId",
+                        column: x => x.RoundId,
+                        principalTable: "Rounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CombatUnitConnectors",
                 columns: table => new
                 {
@@ -410,22 +456,22 @@ namespace StrategyGame.Dal.Migrations
                 columns: new[] { "Id", "AttackMultiplier", "CoralMultiplier", "DefenseMultiplier", "Description", "Name", "Price", "TaxMultiplier" },
                 values: new object[,]
                 {
-                    { 1, 1.0, 1.1000000000000001, 1.0, null, "Mud tractor", 0, 1.0 },
-                    { 2, 1.0, 1.1499999999999999, 1.0, null, "Mud harvester", 0, 1.0 },
-                    { 3, 1.0, 1.0, 1.2, null, "Coral wall", 0, 1.0 },
-                    { 4, 1.2, 1.0, 1.0, null, "Sonar cannon", 0, 1.0 },
-                    { 5, 1.1000000000000001, 1.0, 1.1000000000000001, null, "Underwater martial arts", 0, 1.0 },
-                    { 6, 1.0, 1.0, 1.0, null, "Alchemy", 0, 1.3 }
+                    { 1, 1.0, 1.1000000000000001, 1.0, null, "Mud tractor", 300, 1.0 },
+                    { 2, 1.0, 1.1499999999999999, 1.0, null, "Mud harvester", 500, 1.0 },
+                    { 3, 1.0, 1.0, 1.2, null, "Coral wall", 500, 1.0 },
+                    { 4, 1.2, 1.0, 1.0, null, "Sonar cannon", 500, 1.0 },
+                    { 5, 1.1000000000000001, 1.0, 1.1000000000000001, null, "Underwater martial arts", 750, 1.0 },
+                    { 6, 1.0, 1.0, 1.0, null, "Alchemy", 1000, 1.3 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Units",
-                columns: new[] { "Id", "Attack", "Defense", "Description", "Name", "Pay", "Price", "Supply" },
+                columns: new[] { "Id", "Attack", "Defense", "Description", "Name", "Pay", "Price", "ScoreboardValue", "Supply" },
                 values: new object[,]
                 {
-                    { 1, 6, 2, null, "Rush seal", 1, 50, 1 },
-                    { 2, 2, 6, null, "War sea horse", 1, 50, 1 },
-                    { 3, 5, 5, null, "Laser shark", 3, 100, 2 }
+                    { 1, 6, 2, null, "Rush seal", 1, 50, 5, 1 },
+                    { 2, 2, 6, null, "War sea horse", 1, 50, 5, 1 },
+                    { 3, 5, 5, null, "Laser shark", 3, 100, 10, 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -493,6 +539,12 @@ namespace StrategyGame.Dal.Migrations
                 column: "UnitId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Countries_UserId",
+                table: "Countries",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CountryBuildingConnectors_BuildStartedRoundId",
                 table: "CountryBuildingConnectors",
                 column: "BuildStartedRoundId");
@@ -531,6 +583,16 @@ namespace StrategyGame.Dal.Migrations
                 name: "IX_CountryUnitConnectors_UnitId",
                 table: "CountryUnitConnectors",
                 column: "UnitId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScoreboardEntries_CountryId",
+                table: "ScoreboardEntries",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScoreboardEntries_RoundId",
+                table: "ScoreboardEntries",
+                column: "RoundId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -563,10 +625,10 @@ namespace StrategyGame.Dal.Migrations
                 name: "CountryUnitConnectors");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "ScoreboardEntries");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Combats");
@@ -585,6 +647,9 @@ namespace StrategyGame.Dal.Migrations
 
             migrationBuilder.DropTable(
                 name: "Rounds");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
