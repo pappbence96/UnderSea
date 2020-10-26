@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StrategyGame.Bll.Extensions;
+using StrategyGame.Bll.Services.Resource;
 using StrategyGame.Dal;
 using StrategyGame.Model.Entities;
 using System;
@@ -19,34 +20,21 @@ namespace StrategyGame.Bll.Services.GameEngineService
         private const int ResearchScoreValue = 100;
 
         private readonly UnderseaDbContext context;
+        private readonly IResourceService resourceService;
 
-        public GameEngineService(UnderseaDbContext context)
+        public GameEngineService(UnderseaDbContext context, IResourceService resourceService)
         {
             this.context = context;
+            this.resourceService = resourceService;
         }
 
-        private void PerformPreCombatTasks()
+        private async Task PerformPreCombatTasks()
         {
             foreach (var country in context.Countries)
             {
-                // Tax calculation : (base population tax + building production) * research modifiers
-                int baseTax = country.Population * PopulationDefaultTax;
-                int pearlProduction = country.Buildings
-                    .Where(c => c.IsComplete)
-                    .Sum(b => b.Building.PearlPerRound);
-                double pearlModifier = country.Researches
-                    .Where(c => c.IsComplete)
-                    .Product(c => c.Research.TaxMultiplier);
-                country.Pearl += (int)((baseTax + pearlProduction) * pearlModifier);
+                country.Pearl += await resourceService.GetPearlIncrementOfCountry(country.Id);
 
-                // Coral calculation: building production * research modifier
-                int coralProduction = country.Buildings
-                    .Where(c => c.IsComplete)
-                    .Sum(b => b.Building.CoralPerRound);
-                double coralModifier = country.Researches
-                    .Where(c => c.IsComplete)
-                    .Product(c => c.Research.CoralMultiplier);
-                country.Coral += (int)(coralProduction * coralModifier);
+                country.Coral += await resourceService.GetCoralIncrementOfCountry(country.Id);
 
                 // Soldier pay (for now let's assume that countries can go into debt)
                 var totalPay = country.Units.Sum(c => c.TotalCount * c.Unit.Pay);
@@ -174,7 +162,7 @@ namespace StrategyGame.Bll.Services.GameEngineService
 
         public async Task PerformTick()
         {
-            PerformPreCombatTasks();
+            await PerformPreCombatTasks();
             await PerformCombats();
             await CalculateScoreboard();
             await context.SaveChangesAsync();

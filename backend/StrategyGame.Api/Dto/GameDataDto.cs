@@ -16,5 +16,6 @@ namespace StrategyGame.Api.Dto
         public int PearlPerRound { get; set; }
         public int Coral { get; set; }
         public int CoralPerRound { get; set; }
+        public int Population { get; internal set; }
     }
 }

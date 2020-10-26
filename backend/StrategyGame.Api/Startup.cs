@@ -22,6 +22,7 @@ using StrategyGame.Bll.Services.Building;
 using StrategyGame.Bll.Services.GameEngineService;
 using StrategyGame.Bll.Services.Identity;
 using StrategyGame.Bll.Services.Research;
+using StrategyGame.Bll.Services.Resource;
 using StrategyGame.Bll.Services.Scoreboard;
 using StrategyGame.Bll.Services.Units;
 using StrategyGame.Bll.Services.User;
@@ -102,6 +103,7 @@ namespace StrategyGame.Api
             services.AddTransient<IScoreboardService, ScoreboardService>();
             services.AddTransient<IUnitsService, UnitsService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IResourceService, ResourceService>();
 
             services.AddHttpContextAccessor();
             services.AddTransient<IUserAccessor, UserAccessor>();

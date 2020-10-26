@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 using StrategyGame.Api.Dto;
 using StrategyGame.Api.Services.UserAccessor;
 using StrategyGame.Bll.Services.Building;
+using StrategyGame.Bll.Services.Resource;
 using StrategyGame.Bll.Services.Units;
 using StrategyGame.Bll.Services.User;
 
@@ -23,13 +24,15 @@ namespace StrategyGame.Api.Controllers
         private readonly IUserService userService;
         private readonly IUnitsService unitsService;
         private readonly IBuildingService buildingService;
+        private readonly IResourceService resourceService;
 
-        public MainController(IUserAccessor userAccessor, IUnitsService unitsService, IBuildingService buildingService, IUserService userService)
+        public MainController(IUserAccessor userAccessor, IUnitsService unitsService, IBuildingService buildingService, IUserService userService, IResourceService resourceService)
         {
             this.userAccessor = userAccessor;
             this.unitsService = unitsService;
             this.buildingService = buildingService;
             this.userService = userService;
+            this.resourceService = resourceService;
         }
 
         [HttpGet("test")]
@@ -50,10 +53,11 @@ namespace StrategyGame.Api.Controllers
                 CountryName = user.Country.Name,
                 Units = units,
                 Buildings = buildings,
-                Coral = 0,
-                CoralPerRound = 0,
-                Pearl = 0,
-                PearlPerRound = 0
+                Coral = user.Country.Coral,
+                CoralPerRound = await resourceService.GetCoralIncrementOfCountry(user.Country.Id),
+                Pearl = user.Country.Pearl,
+                PearlPerRound = await resourceService.GetPearlIncrementOfCountry(user.Country.Id),
+                Population = user.Country.Population
             };
         }
     }
