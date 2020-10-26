@@ -63,5 +63,12 @@ namespace StrategyGame.Bll.Services.Building
             await context.SaveChangesAsync();
             return connection;
         }
+
+        public async Task<IEnumerable<CountryBuildingConnector>> GetAllBuildingsOfCountry(int countryId)
+        {
+            var country = (await context.Countries.Include(c => c.Buildings).FirstOrDefaultAsync(r => r.Id == countryId))
+                ?? throw new KeyNotFoundException($"Country with ID {countryId} not found.");
+            return country.Buildings;
+        }
     }
 }
