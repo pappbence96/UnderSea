@@ -20,7 +20,7 @@ namespace StrategyGame.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] LoginModel model)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginModel model)
         {
             return Ok(await identityService.CreateTokenForUser(model));
         }

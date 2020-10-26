@@ -28,11 +28,17 @@ namespace StrategyGame.Api.Middlewares.ExceptionHandling
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            var error = new ErrorDetails();
+            var error = new ErrorDetails
+            {
+                Message = exception.Message
+            };
             if (exception is ArgumentException || exception is InvalidOperationException)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                error.Message = exception.Message;
+            }
+            else if (exception is KeyNotFoundException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             }
             else
             {
