@@ -26,20 +26,22 @@ namespace StrategyGame.Bll.Services.Identity
             this.roleManager = roleManager;
         }
 
-        public async Task<string> CreateTokenForUser(LoginModel model)
+        public async Task<LoginResponse> CreateTokenForUser(LoginModel model)
         {
             if (model == null || !model.Valid)
             {
                 throw new ArgumentException("Login model is null.");
             }
-            var user = await userManager.FindByNameAsync(model.Username);
+            var user = (await userManager.FindByNameAsync(model.Username))
+                ?? throw new ArgumentException("This user does not exist.");
             if (await userManager.CheckPasswordAsync(user, model.Password))
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("D0n7_L34v3_M3_H3r3"));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, model.Username)
+                    new Claim(ClaimTypes.Name, model.Username),
+                    new Claim("sub", user.Id.ToString())
                 };
                 foreach (var role in roleManager.Roles)
                 {
@@ -57,11 +59,11 @@ namespace StrategyGame.Bll.Services.Identity
                    signingCredentials: signinCredentials
                );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-                return tokenString;
+                return new LoginResponse { Token = tokenString };
             }
             else
             {
-                throw new ArgumentException("Password is incorrect.");
+                throw new ArgumentException("The provided password was incorrect.");
             }
         }
 
@@ -74,19 +76,19 @@ namespace StrategyGame.Bll.Services.Identity
             }
             if(model.Password != model.ConfirmPassword)
             {
-                throw new ArgumentException("Passwords do not match.");
+                throw new ArgumentException("The provided passwords do not match.");
             }
 
             // Check for existing user and country
             var user = await userManager.FindByNameAsync(model.Username);
             if(user != null)
             {
-                throw new InvalidOperationException("User already exists.");
+                throw new InvalidOperationException($"There is already a user with the username \"{model.Username}\"");
             }
             var country = await context.Countries.FirstOrDefaultAsync(c => c.Name.ToUpper() == model.CountryName.ToUpper());
             if(country != null)
             {
-                throw new InvalidOperationException("Country already exists.");
+                throw new InvalidOperationException($"There is already a country with the name \"{model.CountryName}\"");
             }
 
             // Create the entities
@@ -97,7 +99,7 @@ namespace StrategyGame.Bll.Services.Identity
             var result = await userManager.CreateAsync(user, model.Password);
             if(!result.Succeeded)
             {
-                throw new Exception("User creation failed.");
+                throw new ArgumentException("The provided password is not strong enough.");
             }
             await userManager.AddToRoleAsync(user, "user");
             country = new Country
