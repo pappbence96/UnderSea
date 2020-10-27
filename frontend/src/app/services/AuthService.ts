@@ -32,7 +32,7 @@ export class AuthService {
             { username, password }
         ).pipe(map(login => {
             localStorage.setItem('currentLogin', JSON.stringify(login));
-            this.currentLoginSubject.next(login);
+            this.currentLoginSubject.next(login); 
             return login;
         }));
     }

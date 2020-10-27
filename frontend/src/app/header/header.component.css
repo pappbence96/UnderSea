@@ -1,0 +1,42 @@
+mat-icon {
+    width: 60px;
+    height: 60px;
+    background: #9FFFF0 0% 0% no-repeat padding-box;
+    border: 2px solid #428DFF;
+    border-radius: 14px;
+    padding: 4px;
+    opacity: 1;
+}
+
+.header {
+    height: 84px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 16px;
+    opacity: 1;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+p {
+    margin: 0px;
+}
+
+.media-body {
+    padding: 5px;
+}
+
+.bigtext {
+    text-align: left;
+    font: normal normal normal 32px Baloo;
+    letter-spacing: 0px;
+    color: #1C3E76;
+    opacity: 1;
+}
+
+.normaltext {
+    text-align: left;
+    font: normal normal normal 20px Baloo;
+    letter-spacing: 0px;
+    color: #1C3E76;
+    opacity: 1;
+}

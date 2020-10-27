@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { GameService } from '../services/GameService';
+import { first } from 'rxjs/operators';
+import { GameDataDto } from '../dtos/GameDataDto';
 
 @Component({
   selector: 'app-main',
@@ -7,9 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() { }
+  gameData: GameDataDto;
+
+  constructor(private gameService: GameService) { }
 
   ngOnInit(): void {
+    this.gameService.loadGameData()
+    .pipe(first())
+    .subscribe(
+      data => {
+        this.gameData = data;
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
-
 }

@@ -17,13 +17,20 @@ import { MainComponent } from './main/main.component';
 import { RegisterComponent } from './register/register.component'
 import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorInterceptor } from './utilities/ErrorInterceptor';
+import { HeaderComponent } from './header/header.component';
+import { JwtInterceptor } from './utilities/JwtInterceptor';
+
+import { MatIconModule} from '@angular/material/icon';
+import { SidebarComponent } from './sidebar/sidebar.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     MainComponent,
-    RegisterComponent
+    RegisterComponent,
+    HeaderComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
@@ -31,11 +38,13 @@ import { ErrorInterceptor } from './utilities/ErrorInterceptor';
     AppRoutingModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    MatIconModule,
 
     FlexLayoutModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

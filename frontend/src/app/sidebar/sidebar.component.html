@@ -1,0 +1,15 @@
+<div class="btn-group-vertical">
+    <button mat-button class="menu_button">Buildings</button>
+    <button mat-button class="menu_button">Attack</button>
+    <button mat-button class="menu_button">Research</button>
+    <button mat-button class="menu_button">Combat</button>
+    <button mat-button class="menu_button">Scoreboard</button>
+    <button mat-button class="menu_button">Army</button>
+</div>
+
+<div class="profile_badge d-flex flex-column justify-content-center align-items-center">
+    <mat-icon svgIcon="profile_placeholder"></mat-icon>
+    <p>{{gameData ? gameData.username : ":"}}</p>
+    <button mat-button class="badge_button" >Profile</button>
+    <button mat-button class="badge_button" (click)="onLogout()">Log out</button>
+</div>

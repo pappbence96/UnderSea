@@ -1,0 +1,73 @@
+<div class="container-fluid">
+
+    <div class="row d-flex align-items-center header">
+
+        <div class="col">
+            <p class="bigtext">{{gameData ? gameData.roundNumber : -1}}. kör </p>
+        </div>
+
+        <div class="col">
+            <p class="bigtext">{{gameData ? gameData.scoreboardPosition : -1}}. helyezés</p>
+        </div>
+        
+        <div class="col">
+            <div class="media d-flex align-items-center">
+                <span class="media-left">
+                    <mat-icon svgIcon="pearl"></mat-icon>
+                </span>
+                <div class="media-body">
+                    <p class="bigtext">{{gameData ? gameData.pearl : -1}}</p>
+                    <p class="normaltext">{{gameData ? gameData.pearlPerRound : -1}}/kör </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="media d-flex align-items-center">
+                <span class="media-left">
+                    <mat-icon svgIcon="coral"></mat-icon>
+                </span>
+                <div class="media-body">
+                    <p class="bigtext">{{gameData ? gameData.coral : -1}}</p>
+                    <p class="normaltext">{{gameData ? gameData.coralPerRound : -1}}/kör </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="media d-flex align-items-center">
+                <span class="media-left">
+                    <mat-icon svgIcon="unit-1"></mat-icon>
+                </span>
+                <div class="media-body">
+                    <p class="bigtext">{{gameData ? gameData.units[1] : -1}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="media d-flex align-items-center">
+                <span class="media-left">
+                    <mat-icon svgIcon="unit-2"></mat-icon>
+                </span>
+                <div class="media-body">
+                    <p class="bigtext">{{gameData ? gameData.units[2] : -1}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="media d-flex align-items-center">
+                <span class="media-left">
+                    <mat-icon svgIcon="unit-3"></mat-icon>
+                </span>
+                <div class="media-body">
+                    <p class="bigtext">{{gameData ? gameData.units[3] : -1}}</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
