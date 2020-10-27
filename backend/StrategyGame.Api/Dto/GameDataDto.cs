@@ -8,6 +8,7 @@ namespace StrategyGame.Api.Dto
     public class GameDataDto
     {
         public int RoundNumber { get; set; }
+        public int ScoreboardPosition { get; set; }
         public string Username { get; set; }
         public string CountryName { get; set; }
         public Dictionary<int, int> Units { get; set; }

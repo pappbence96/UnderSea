@@ -9,7 +9,9 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 using StrategyGame.Api.Dto;
 using StrategyGame.Api.Services.UserAccessor;
 using StrategyGame.Bll.Services.Building;
+using StrategyGame.Bll.Services.GameEngineService;
 using StrategyGame.Bll.Services.Resource;
+using StrategyGame.Bll.Services.Scoreboard;
 using StrategyGame.Bll.Services.Units;
 using StrategyGame.Bll.Services.User;
 
@@ -25,30 +27,35 @@ namespace StrategyGame.Api.Controllers
         private readonly IUnitsService unitsService;
         private readonly IBuildingService buildingService;
         private readonly IResourceService resourceService;
+        private readonly IGameEngineService gameEngineService;
+        private readonly IScoreboardService scoreboardService;
 
-        public MainController(IUserAccessor userAccessor, IUnitsService unitsService, IBuildingService buildingService, IUserService userService, IResourceService resourceService)
+        public MainController(IUserAccessor userAccessor, IUnitsService unitsService, IBuildingService buildingService, IUserService userService, IResourceService resourceService, IGameEngineService gameEngineService, IScoreboardService scoreboardService)
         {
             this.userAccessor = userAccessor;
             this.unitsService = unitsService;
             this.buildingService = buildingService;
             this.userService = userService;
             this.resourceService = resourceService;
+            this.gameEngineService = gameEngineService;
+            this.scoreboardService = scoreboardService;
         }
 
-        [HttpGet("test")]
+        [HttpGet]
         public async Task<ActionResult<GameDataDto>> GetGameData()
         {
             var user = await userService.GetUserById(userAccessor.UserId);
             var units = (await unitsService
                 .GetAllUnitsOfCountry(user.Country.Id))
-                .ToDictionary(u => u.Id, u => u.TotalCount);
+                .ToDictionary(u => u.Unit.Id, u => u.TotalCount);
             var buildings = (await buildingService
                 .GetAllBuildingsOfCountry(user.Country.Id)).ToList()
                 .GroupBy(b => b.BuildingId, b => b)
                 .ToDictionary(g => g.Key, g => g.Count());
             return new GameDataDto
             {
-                RoundNumber = -1,
+                RoundNumber = (await gameEngineService.GetActiveRoundAsync()).Number,
+                ScoreboardPosition = (await scoreboardService.GetLatestScoreboardForCountry(user.Country.Id))?.Position ?? -1,
                 Username = user.UserName,
                 CountryName = user.Country.Name,
                 Units = units,
@@ -59,6 +66,13 @@ namespace StrategyGame.Api.Controllers
                 PearlPerRound = await resourceService.GetPearlIncrementOfCountry(user.Country.Id),
                 Population = user.Country.Population
             };
+        }
+
+        [HttpGet("tick")]
+        public async Task<ActionResult> TickGame()
+        {
+            await gameEngineService.PerformTick();
+            return Ok();
         }
     }
 }
