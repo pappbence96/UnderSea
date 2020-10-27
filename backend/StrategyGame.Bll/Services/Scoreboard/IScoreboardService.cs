@@ -7,6 +7,7 @@ namespace StrategyGame.Bll.Services.Scoreboard
 {
     public interface IScoreboardService
     {
+        Task<ScoreboardEntry> GetLatestScoreboardForCountry(int countryId);
         Task<IEnumerable<ScoreboardEntry>> GetScoreboard(DateTime? selectedMoment);
     }
 }

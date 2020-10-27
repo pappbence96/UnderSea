@@ -30,7 +30,12 @@ namespace StrategyGame.Bll.Services.GameEngineService
 
         private async Task PerformPreCombatTasks()
         {
-            foreach (var country in context.Countries)
+            var countries = context.Countries
+                .Include(c => c.Units).ThenInclude(u => u.Unit)
+                .Include(c => c.Buildings)
+                .Include(c => c.Researches);
+
+            foreach (var country in countries)
             {
                 country.Pearl += await resourceService.GetPearlIncrementOfCountry(country.Id);
 
@@ -66,7 +71,13 @@ namespace StrategyGame.Bll.Services.GameEngineService
         private async Task PerformCombats()
         {
             // Combat
-            var currentRound = await context.Rounds.FirstAsync(r => r.IsActive);
+            var currentRound = await context.Rounds
+                .Include(r => r.ActiveCombats).ThenInclude(c => c.Attacker).ThenInclude(a => a.Units).ThenInclude(u => u.Unit)
+                .Include(r => r.ActiveCombats).ThenInclude(c => c.Attacker).ThenInclude(a => a.Researches).ThenInclude(r => r.Research)
+                .Include(r => r.ActiveCombats).ThenInclude(c => c.Defender).ThenInclude(d => d.Units).ThenInclude(u => u.Unit)
+                .Include(r => r.ActiveCombats).ThenInclude(c => c.Defender).ThenInclude(d => d.Researches).ThenInclude(r => r.Research)
+                .Include(r => r.ActiveCombats).ThenInclude(c => c.Units).ThenInclude(u => u.Unit)
+                .FirstAsync(r => r.IsActive);
             foreach (var combat in currentRound.ActiveCombats)
             {
                 // Attacking army strength
@@ -120,7 +131,7 @@ namespace StrategyGame.Bll.Services.GameEngineService
             }
 
             // Reset the "units in combat" to 0 only after all the combats of the round were finished
-            foreach (var country in context.Countries)
+            foreach (var country in context.Countries.Include(c => c.Units))
             {
                 foreach (var unit in country.Units)
                 {
@@ -131,9 +142,11 @@ namespace StrategyGame.Bll.Services.GameEngineService
         private async Task CalculateScoreboard()
         {
             // Scoreboard calculation
-            var currentRound = await context.Rounds.FirstAsync(r => r.IsActive);
+            var currentRound = await context.Rounds.Include(r => r.ScoreboardEntries).FirstAsync(r => r.IsActive);
             var newScoreboardEntries = new List<ScoreboardEntry>();
-            foreach (var country in context.Countries)
+            var countries = context.Countries
+                .Include(c => c.Researches).Include(c => c.Buildings).Include(c => c.Units).ThenInclude(u => u.Unit);
+            foreach (var country in countries)
             {
                 var newEntry = new ScoreboardEntry
                 {
@@ -144,19 +157,21 @@ namespace StrategyGame.Bll.Services.GameEngineService
                     ArmyScore = country.Units.Sum(u => u.TotalCount * u.Unit.ScoreboardValue),
                     ResearchScore = country.Researches.Count(r => r.IsComplete) * ResearchScoreValue
                 };
+                newScoreboardEntries.Add(newEntry);
             }
 
             // Order and set computed position
             newScoreboardEntries = newScoreboardEntries.OrderByDescending(e => e.TotalScore).ToList();
             for (int i = 0; i < newScoreboardEntries.Count; i++)
             {
-                newScoreboardEntries[i].Position = i;
+                newScoreboardEntries[i].Position = i + 1;
+                currentRound.ScoreboardEntries.Add(newScoreboardEntries[i]);
             }
 
             // Finalize round and start the next one
             currentRound.IsActive = false;
             currentRound.TickedAt = DateTime.UtcNow;
-            var newRound = new Round() { IsActive = true };
+            var newRound = new Round() { IsActive = true, Number = currentRound.Number + 1 };
             context.Rounds.Add(newRound);
         }
 
@@ -166,6 +181,12 @@ namespace StrategyGame.Bll.Services.GameEngineService
             await PerformCombats();
             await CalculateScoreboard();
             await context.SaveChangesAsync();
+        }
+
+        public async Task<Round> GetActiveRoundAsync()
+        {
+            var round = await context.Rounds.FirstOrDefaultAsync(r => r.IsActive);
+            return round;
         }
     }
 }

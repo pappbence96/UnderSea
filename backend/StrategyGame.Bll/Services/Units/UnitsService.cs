@@ -25,7 +25,7 @@ namespace StrategyGame.Bll.Services.Units
 
         public async Task<IEnumerable<CountryUnitConnector>> GetAllUnitsOfCountry(int countryId)
         {
-            var country = (await context.Countries.Include(c => c.Units).FirstOrDefaultAsync(r => r.Id == countryId))
+            var country = (await context.Countries.Include(c => c.Units).ThenInclude(u => u.Unit).FirstOrDefaultAsync(r => r.Id == countryId))
                 ?? throw new KeyNotFoundException($"Country with ID {countryId} not found.");
             return country.Units;
         }

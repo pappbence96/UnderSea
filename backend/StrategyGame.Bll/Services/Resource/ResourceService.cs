@@ -40,9 +40,12 @@ namespace StrategyGame.Bll.Services.Resource
         }
 
         public async Task<int> GetPearlIncrementOfCountry(int countryId)
-        {
-            var country = (await context.Countries.Include(c => c.Buildings).ThenInclude(b => b.Building).FirstOrDefaultAsync(c => c.Id == countryId))
-                   ?? throw new KeyNotFoundException($"Country not found with id: {countryId}");
+        { 
+            var country = (await context.Countries
+                .Include(c => c.Buildings).ThenInclude(b => b.Building)
+                .Include(c => c.Researches).ThenInclude(r => r.Research)
+                .FirstOrDefaultAsync(c => c.Id == countryId))
+                ?? throw new KeyNotFoundException($"Country not found with id: {countryId}");
 
             int coralProduction = country.Buildings
                     .Where(c => c.IsComplete)

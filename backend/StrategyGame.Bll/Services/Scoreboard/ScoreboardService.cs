@@ -40,5 +40,11 @@ namespace StrategyGame.Bll.Services.Scoreboard
             }
             return selectedRound.ScoreboardEntries;
         }
+
+        public async Task<ScoreboardEntry> GetLatestScoreboardForCountry(int countryId)
+        {
+            var lastRound = await context.Rounds.Include(r => r.ScoreboardEntries).OrderBy(r => r.Number).LastOrDefaultAsync(r => !r.IsActive);
+            return lastRound.ScoreboardEntries.SingleOrDefault(e => e.CountryId == countryId);
+        }
     }
 }
