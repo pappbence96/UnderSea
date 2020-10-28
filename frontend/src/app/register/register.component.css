@@ -1,0 +1,52 @@
+.title {
+    text-align: left;
+    font: normal normal normal 93px/147px Baloo;
+    letter-spacing: 0px;
+    color: #9FFFF0;
+    opacity: 1;
+}
+
+.formcontainer {
+    width: 400px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    opacity: 1;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 20px;
+}
+
+.formheader {
+    text-align: center;
+    font: normal normal normal 32px/51px Baloo;
+    letter-spacing: 0px;
+    color: #1C3E76;
+    opacity: 1;
+}
+
+input {
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border-radius: 20px;
+    opacity: 0.39;
+}
+
+.register_button {
+    width: 192px;
+    height: 50px;
+    background: transparent linear-gradient(258deg, #9FFFF0 0%, #6BEEE9 36%, #9ca4a5 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #3B7DBD;
+    border-radius: 51px;
+    opacity: 1;
+    font: normal normal normal 18px/28px Baloo;
+    letter-spacing: 0px;
+    color: #001234;
+    margin: 15px 0px;
+}
+
+a {
+    text-align: center;
+    font: normal normal normal 18px/28px Baloo;
+    letter-spacing: 0px;
+    color: #9FFFF0;
+    opacity: 1;
+}
