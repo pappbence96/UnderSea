@@ -1,10 +1,14 @@
 .container-fluid {
-    background-image: url('../assets/images/main_bg.png');
-    
     padding: 30px;
-
     height: 100%;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+.unauthenticated {
+    background-image: url('../assets/images/undersea-bg.png');
+}
+.authenticated {
+    background-image: url('../assets/images/main_bg.png');
 }

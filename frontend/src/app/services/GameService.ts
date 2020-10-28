@@ -19,8 +19,6 @@ export class GameService {
         return this.http
             .get<GameDataDto>("http://localhost:51554/api/main")
             .pipe(map(data => {
-                console.log("GameService");
-                console.log(data);
                 this.gameDataSubject.next(data);
                 return data;
             }));
