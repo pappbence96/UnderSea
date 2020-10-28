@@ -3,11 +3,11 @@
     <div class="row d-flex align-items-center header">
 
         <div class="col">
-            <p class="bigtext">{{gameData ? gameData.roundNumber : -1}}. kör </p>
+            <p class="bigtext">{{gameData ? gameData.roundNumber : 0}}. kör </p>
         </div>
 
         <div class="col">
-            <p class="bigtext">{{gameData ? gameData.scoreboardPosition : -1}}. helyezés</p>
+            <p class="bigtext">{{gameData && gameData.scoreboardPosition != -1 ? gameData.scoreboardPosition + '.': 'Nincs'}} helyezés</p>
         </div>
         
         <div class="col">
@@ -16,8 +16,8 @@
                     <mat-icon svgIcon="pearl"></mat-icon>
                 </span>
                 <div class="media-body">
-                    <p class="bigtext">{{gameData ? gameData.pearl : -1}}</p>
-                    <p class="normaltext">{{gameData ? gameData.pearlPerRound : -1}}/kör </p>
+                    <p class="bigtext">{{gameData ? gameData.pearl : 0}}</p>
+                    <p class="normaltext">{{gameData ? gameData.pearlPerRound : 0}}/kör </p>
                 </div>
             </div>
         </div>
@@ -28,8 +28,8 @@
                     <mat-icon svgIcon="coral"></mat-icon>
                 </span>
                 <div class="media-body">
-                    <p class="bigtext">{{gameData ? gameData.coral : -1}}</p>
-                    <p class="normaltext">{{gameData ? gameData.coralPerRound : -1}}/kör </p>
+                    <p class="bigtext">{{gameData ? gameData.coral : 0}}</p>
+                    <p class="normaltext">{{gameData ? gameData.coralPerRound : 0}}/kör </p>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                     <mat-icon svgIcon="unit-1"></mat-icon>
                 </span>
                 <div class="media-body">
-                    <p class="bigtext">{{gameData ? gameData.units[1] : -1}}</p>
+                    <p class="bigtext">{{gameData && gameData.units[1] ? gameData.units[1] : 0}}</p>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
                     <mat-icon svgIcon="unit-2"></mat-icon>
                 </span>
                 <div class="media-body">
-                    <p class="bigtext">{{gameData ? gameData.units[2] : -1}}</p>
+                    <p class="bigtext">{{gameData && gameData.units[2] ? gameData.units[2] : 0}}</p>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                     <mat-icon svgIcon="unit-3"></mat-icon>
                 </span>
                 <div class="media-body">
-                    <p class="bigtext">{{gameData ? gameData.units[3] : -1}}</p>
+                    <p class="bigtext">{{gameData && gameData.units[3] ? gameData.units[3] : 0}}</p>
                 </div>
             </div>
         </div>
