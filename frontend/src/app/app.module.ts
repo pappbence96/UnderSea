@@ -23,6 +23,8 @@ import { JwtInterceptor } from './utilities/JwtInterceptor';
 import { MatIconModule} from '@angular/material/icon';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { UnitTypeWindowComponent } from './unit-type-window/unit-type-window.component'
+import { API_URL } from './utilities/UrlInjectionToken';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,8 @@ import { UnitTypeWindowComponent } from './unit-type-window/unit-type-window.com
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    {provide: API_URL, useValue: environment.apiUrl}
   ],
   bootstrap: [AppComponent]
 })

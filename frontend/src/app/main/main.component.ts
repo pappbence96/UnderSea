@@ -17,27 +17,27 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(private gameService: GameService, private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) {
     this.matIconRegistry.addSvgIcon(
       `profile_placeholder`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/images/profile_placeholder.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/images/profile_placeholder.svg')
     );
     this.matIconRegistry.addSvgIcon(
       `unit-1`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/images/units/1.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/images/units/1.svg')
     );
     this.matIconRegistry.addSvgIcon(
       `unit-2`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/images/units/2.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/images/units/2.svg')
     );
     this.matIconRegistry.addSvgIcon(
       `unit-3`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/images/units/3.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/images/units/3.svg')
     );
     this.matIconRegistry.addSvgIcon(
       `coral`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/images/resources/coral.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/images/resources/coral.svg')
     );
     this.matIconRegistry.addSvgIcon(
       `pearl`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/images/resources/pearl.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/images/resources/pearl.svg')
     );
    }
 
@@ -54,12 +54,12 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       );
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     document.querySelector('.body').classList.add('authenticated');
     document.querySelector('.body').classList.remove('unauthenticated');
   }
-  
-  ngOnDestroy() {
+
+  ngOnDestroy(): void {
     document.querySelector('.body').classList.remove('authenticated');
     document.querySelector('.body').classList.add('unauthenticated');
   }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/AuthService';
 import { first } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ApiErrorDts } from '../dtos/ApiErrorDto';
 
 @Component({
@@ -30,15 +30,15 @@ export class LoginComponent implements OnInit {
         username: ['', Validators.required],
         password: ['', Validators.required]
     });
-    
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
   }
 
-  get f() { 
-    return this.loginForm.controls; 
+  get f(): {[key: string]: AbstractControl} {
+    return this.loginForm.controls;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
 
     if(this.loginForm.invalid) {

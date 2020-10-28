@@ -12,22 +12,20 @@ export class SidebarComponent implements OnInit {
 
   @Input() gameData: GameDataDto;
 
-  constructor(private authService: AuthService, private router: Router) { 
+  constructor(private authService: AuthService, private router: Router) {
   }
 
   ngOnInit(): void {
 
   }
 
-  onLogout() {
-    console.log("onLogout()");
+  onLogout(): void {
     this.authService.logout();
     location.reload(true);
   }
 
-  onUnitsClick() {
-    console.log("Units clicked");
-    this.router.navigate(["units"]);
+  onUnitsClick(): void {
+    this.router.navigate(['units']);
   }
 
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../services/AuthService';
 import { first } from 'rxjs/operators';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -31,11 +31,11 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  get f() { 
-    return this.registerForm.controls; 
+  get f(): { [key: string]: AbstractControl } {
+    return this.registerForm.controls;
   }
-  
-  onSubmit() {
+
+  onSubmit(): void {
     this.submitted = true;
 
     if(this.registerForm.invalid) {

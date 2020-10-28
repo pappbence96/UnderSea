@@ -10,10 +10,10 @@ export class HeaderComponent implements OnInit {
 
   @Input() gameData: GameDataDto;
 
-  constructor() { 
+  constructor() {
   }
 
   ngOnInit(): void {
-    
+
   }
 }
