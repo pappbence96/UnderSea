@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@angular/core";
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GameDataDto } from '../dtos/GameDataDto';
 import { map } from 'rxjs/operators';

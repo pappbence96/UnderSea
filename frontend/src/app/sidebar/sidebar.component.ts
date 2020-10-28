@@ -21,7 +21,7 @@ export class SidebarComponent implements OnInit {
 
   onLogout(): void {
     this.authService.logout();
-    location.reload(true);
+    location.reload();
   }
 
   onUnitsClick(): void {

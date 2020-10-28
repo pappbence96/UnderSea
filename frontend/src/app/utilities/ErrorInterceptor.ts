@@ -14,7 +14,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             console.log(err);
             if (err.status === 401) {
                 this.authService.logout();
-                location.reload(true);
+                location.reload();
             }
 
             const error = err.error.Message || err.statusText;
