@@ -55,16 +55,11 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    console.log("Main afterviewinit");
-    let body = document.querySelector('.body');
-    console.log(body);
-    console.log(body.classList);
-    body.classList.add('authenticated');
+    document.querySelector('.body').classList.add('authenticated');
     document.querySelector('.body').classList.remove('unauthenticated');
   }
   
   ngOnDestroy() {
-    console.log("Main ondestroy");
     document.querySelector('.body').classList.remove('authenticated');
     document.querySelector('.body').classList.add('unauthenticated');
   }

@@ -21,7 +21,8 @@ import { HeaderComponent } from './header/header.component';
 import { JwtInterceptor } from './utilities/JwtInterceptor';
 
 import { MatIconModule} from '@angular/material/icon';
-import { SidebarComponent } from './sidebar/sidebar.component'
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { UnitTypeWindowComponent } from './unit-type-window/unit-type-window.component'
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { SidebarComponent } from './sidebar/sidebar.component'
     MainComponent,
     RegisterComponent,
     HeaderComponent,
-    SidebarComponent
+    SidebarComponent,
+    UnitTypeWindowComponent
   ],
   imports: [
     BrowserModule,

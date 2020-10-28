@@ -1,0 +1,22 @@
+.armywindow {
+    background: #03255F 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 34px #03255F;
+    border-radius: 16px;
+    opacity: 1;
+}
+
+.armyheader {
+    text-align: left;
+    font: normal normal normal 32px/51px Baloo;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+.armytext {
+    text-align: left;
+    font: normal normal bold 16px/22px Open Sans;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    opacity: 1;
+}

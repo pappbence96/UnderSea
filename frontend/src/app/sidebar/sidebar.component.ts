@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from '../services/AuthService';
 import { GameDataDto } from '../dtos/GameDataDto';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,7 +12,7 @@ export class SidebarComponent implements OnInit {
 
   @Input() gameData: GameDataDto;
 
-  constructor(private authService: AuthService) { 
+  constructor(private authService: AuthService, private router: Router) { 
   }
 
   ngOnInit(): void {
@@ -22,6 +23,11 @@ export class SidebarComponent implements OnInit {
     console.log("onLogout()");
     this.authService.logout();
     location.reload(true);
+  }
+
+  onUnitsClick() {
+    console.log("Units clicked");
+    this.router.navigate(["units"]);
   }
 
 }
