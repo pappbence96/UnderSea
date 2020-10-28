@@ -18,7 +18,7 @@ export class GameService {
 
     loadGameData(): Observable<GameDataDto> {
         return this.http
-            .get<GameDataDto>(this.apiUrl + '/api/main')
+            .get<GameDataDto>(this.apiUrl + '/main')
             .pipe(map(data => {
                 this.gameDataSubject.next(data);
                 return data;
