@@ -1,8 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material/icon';
-import { GameService } from '../services/GameService';
-import { first } from 'rxjs/operators';
 import { AuthService } from '../services/AuthService';
 import { GameDataDto } from '../dtos/GameDataDto';
 
@@ -15,11 +11,7 @@ export class SidebarComponent implements OnInit {
 
   @Input() gameData: GameDataDto;
 
-  constructor(private gameService: GameService, private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer, private authService: AuthService) { 
-    this.matIconRegistry.addSvgIcon(
-      `profile_placeholder`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/images/profile_placeholder.svg")
-    );
+  constructor(private authService: AuthService) { 
   }
 
   ngOnInit(): void {
